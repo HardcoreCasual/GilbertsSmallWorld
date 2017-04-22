@@ -7,10 +7,13 @@ public class bowlFish : MonoBehaviour
 
     Rigidbody2D fishBody;
     Vector3 leftRotation = new Vector3(0, 0, 0), rightRotation = new Vector3(0, 180, 0);
-    Vector3 inputVector = Vector3.zero;
+    Vector2 inputVector = Vector3.zero;
 
     Animator fishAnim;
     Animation Swim, Idle;
+
+    bool hasBounced = false;
+    float bounceCooldown = 0;
 
     void Start()
     {
@@ -20,14 +23,34 @@ public class bowlFish : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        inputVector = Vector3.zero;
+        //if (!hasBounced)
+        //{
+        if (other.gameObject.tag == "Left Collision")
+        {
+            if (inputVector.x < 0)
+                inputVector.x = -inputVector.x;
+        }
+        else if (other.gameObject.tag == "Right Collision")
+        {
+            if(inputVector.x > 0)
+            inputVector.x = -inputVector.x;
+
+        }
+        else if (other.gameObject.tag == "Top Collision")
+        {
+            inputVector.y = -inputVector.y;
+            hasBounced = true;
+            bounceCooldown = 0;
+        }
+        //}
+
     }
 
     void Update()
     {
         if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
         {
-            if(inputVector.y > 0)
+            if (inputVector.y > 0)
             {
                 if (inputVector.y - Time.deltaTime > 0)
                     inputVector.y -= Time.deltaTime;
@@ -95,7 +118,7 @@ public class bowlFish : MonoBehaviour
             }
         }
         else
-        { 
+        {
             if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
             {
                 if (inputVector.x - Time.deltaTime > -1.5f)
@@ -145,7 +168,6 @@ public class bowlFish : MonoBehaviour
 
         if (inputVector.x != 0)
         {
-            print("fish is moving");
             fishAnim.SetFloat("speed", Mathf.Abs(inputVector.x));
         }
         else
@@ -154,5 +176,16 @@ public class bowlFish : MonoBehaviour
         }
 
         fishBody.velocity = inputVector;
+
+        //if (hasBounced)
+        //    bounceCooldown += Time.deltaTime;
+
+        //if (bounceCooldown >= 0.5f)
+        //    hasBounced = false;
+
+        if (inputVector == Vector2.zero)
+        {
+            transform.position = new Vector2(transform.position.x, transform.position.y + 0.002f * Mathf.Sin(1 * Time.time));
+        }
     }
 }

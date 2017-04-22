@@ -14,7 +14,15 @@ public class Main : MonoBehaviour {
         SceneManager.LoadScene(1);
     }
 
+    public void mainToSky()
+    {
+        SceneManager.LoadScene(2);
+    }
+    
 	void Update () {
-		
+		if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
 	}
 }

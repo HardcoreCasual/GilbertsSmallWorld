@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class oceanFish : MonoBehaviour {
 
-    public GameObject Below, Above, Front;
     public float moveSpeed, rotationSpeed, yMin, yMax;
 
     Vector3 positionVector;
@@ -13,6 +13,14 @@ public class oceanFish : MonoBehaviour {
 	void Start ()
     {
         positionVector = transform.position;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Death")
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
     void Update ()
@@ -33,7 +41,6 @@ public class oceanFish : MonoBehaviour {
                 if (transform.position.y < yMax && (transform.position.y + (Time.deltaTime * moveSpeed) < yMax))
                 {
                     positionVector.y += Time.deltaTime * moveSpeed;
-                    transform.eulerAngles = Vector3.RotateTowards(transform.eulerAngles, Above.transform.position, 0.1f, 0.1f);
 
                     if (zRotation > -45 && zRotation - Time.deltaTime * rotationSpeed > -45)
                         zRotation -= Time.deltaTime * rotationSpeed;
@@ -55,7 +62,6 @@ public class oceanFish : MonoBehaviour {
                 if (transform.position.y > yMin && (transform.position.y - (Time.deltaTime * moveSpeed) > yMin))
                 {
                     positionVector.y -= Time.deltaTime * moveSpeed;
-                    transform.eulerAngles = Vector3.RotateTowards(transform.eulerAngles, Below.transform.position, 0.1f, 0.1f);
 
                     if (zRotation < 45 && zRotation + Time.deltaTime * rotationSpeed < 45)
                         zRotation += Time.deltaTime * rotationSpeed;
