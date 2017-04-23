@@ -7,7 +7,7 @@ public class skyFish : MonoBehaviour {
     Rigidbody2D fishBody;
     public Vector2 jumpForce;
     bool queueJump;
-
+    Vector3 jumpRotation = new Vector3(0, 0, 45);
     void Start ()
     {
         fishBody = GetComponent<Rigidbody2D>();
@@ -23,11 +23,14 @@ public class skyFish : MonoBehaviour {
 
     void FixedUpdate()
     {
+
+
         if (queueJump)
         {
             fishBody.velocity = Vector2.zero;
             fishBody.AddForce(jumpForce, ForceMode2D.Impulse);
             queueJump = false;
+            transform.eulerAngles = jumpRotation;
         }
     }
 
@@ -37,5 +40,12 @@ public class skyFish : MonoBehaviour {
         {
             queueJump = true;
         }
-	}
+        if (!queueJump && transform.eulerAngles.z > -44)
+        {
+            Vector3 tempRotation = transform.eulerAngles;
+            tempRotation.z -= 1;
+            transform.eulerAngles = tempRotation;
+        }
+
+    }
 }

@@ -174,7 +174,6 @@ public class bowlFish : MonoBehaviour
         {
             fishAnim.SetFloat("speed", 0);
         }
-
         fishBody.velocity = inputVector;
 
         //if (hasBounced)
