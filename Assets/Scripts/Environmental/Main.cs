@@ -18,7 +18,12 @@ public class Main : MonoBehaviour {
     {
         SceneManager.LoadScene(2);
     }
-    
+
+    public void mainToSpace()
+    {
+        SceneManager.LoadScene(3);
+    }
+
 	void Update () {
 		if (Input.GetKeyDown(KeyCode.Escape))
         {

@@ -23,8 +23,6 @@ public class skyFish : MonoBehaviour {
 
     void FixedUpdate()
     {
-
-
         if (queueJump)
         {
             fishBody.velocity = Vector2.zero;
