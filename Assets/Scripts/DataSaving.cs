@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 /// <summary>
@@ -33,7 +36,7 @@ public class SaveHighScore
 	public double TotalScore;
 }
 
-public class DataSaving : MonoBehaviour
+public class DataSaving
 {
 	[DllImport("__Internal")]
 	static extern void SyncFiles();
@@ -43,48 +46,55 @@ public class DataSaving : MonoBehaviour
 
 	public void Save(SaveHighScore hs)
 	{
-		string data = string.Format("{0}/GameData.dat", Application.persistentDataPath);
-		BinaryFormatter binaryFormatter = new BinaryFormatter();
-		FileStream fileSteam;
-
-		try
+		var ppath = Application.persistentDataPath;
+		BackgroundWorker worker = new BackgroundWorker();
+		worker.DoWork += (sender, args) =>
 		{
-			if(File.Exists(data))
-			{
-				File.WriteAllText(data, string.Empty);
-				fileSteam = File.Open(data, FileMode.Open);
-			}
-			else
-			{
-				fileSteam = File.Create(data);
-			}
+			string data = string.Format("{0}/GameData.dat", ppath);
+			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			FileStream fileSteam;
 
-			binaryFormatter.Serialize(fileSteam, hs);
-			fileSteam.Close();
-
-			if(Application.platform == RuntimePlatform.WebGLPlayer)
+			try
 			{
-				SyncFiles();
+				if(File.Exists(data))
+				{
+					File.WriteAllText(data, string.Empty);
+					fileSteam = File.Open(data, System.IO.FileMode.Open);
+				}
+				else
+				{
+					fileSteam = File.Create(data);
+				}
+
+				binaryFormatter.Serialize(fileSteam, hs);
+				fileSteam.Close();
+
+				if(Application.platform == RuntimePlatform.WebGLPlayer)
+				{
+					SyncFiles();
+				}
 			}
-		}
-		catch(Exception e)
-		{
-			Console.WriteLine(e);
-			throw;
-		}
+			catch(Exception e)
+			{
+				Console.WriteLine(e);
+				throw;
+			}
+		};
+		worker.RunWorkerAsync();
 	}
 
 	public SaveHighScore Load()
 	{
+		var ppath = Application.persistentDataPath;
 		SaveHighScore gameDetails = null;
-		string dataPath = string.Format("{0}/GameDetails.dat", Application.persistentDataPath);
+		string dataPath = string.Format("{0}/GameData.dat", ppath);
 
 		try
 		{
 			if(File.Exists(dataPath))
 			{
 				BinaryFormatter binaryFormatter = new BinaryFormatter();
-				FileStream fileStream = File.Open(dataPath, FileMode.Open);
+				FileStream fileStream = File.Open(dataPath, System.IO.FileMode.Open);
 
 				gameDetails = (SaveHighScore) binaryFormatter.Deserialize(fileStream);
 				fileStream.Close();
