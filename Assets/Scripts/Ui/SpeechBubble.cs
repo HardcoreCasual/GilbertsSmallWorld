@@ -6,6 +6,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Created by Jacob Quirk, April 22, 2017
+/// This class allows configuration of a speechbubble that shows text over time, in unity
+/// </summary>
 public class SpeechBubble : MonoBehaviour
 {
 	/// <summary>
@@ -80,11 +84,17 @@ public class SpeechBubble : MonoBehaviour
 		TextBubbleReference.text = "";
 	}
 
+	/// <summary>
+	/// Unity Start
+	/// </summary>
 	void Start ()
 	{
 		StartCoroutine(SetTextFor(Seconds, TextInBubble, Math.Abs(SpeedOfText)));
 	}
 
+	/// <summary>
+	/// Unity Update
+	/// </summary>
 	void Update ()
 	{
 		if(Input.GetKeyDown(KeyCode.G))
