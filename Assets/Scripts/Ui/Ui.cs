@@ -13,4 +13,10 @@ public class Ui : MonoBehaviour {
 	void Update () {
 		
 	}
+
+	public void DeleteAllData()
+	{
+		DataSaving ds = new DataSaving();
+		ds.DeleteScores(true);
+	}
 }

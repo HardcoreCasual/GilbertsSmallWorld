@@ -88,6 +88,28 @@ public class DataSaving
 		worker.RunWorkerAsync();
 	}
 
+	/// <summary>
+	/// Will reset all the scores in the location to 0 if you call this with true
+	/// </summary>
+	public void DeleteScores(bool actuallyDothis = false)
+	{
+		SaveHighScore s = new SaveHighScore();
+		s.SkyScore = 0;
+		s.SpaceScore = 0;
+		s.HighScoreName = "";
+		s.OceanScore = 0;
+		s.TotalScore = 0;
+		if(actuallyDothis)
+		{
+			Save(s);
+			Debug.Log("Deleted all saves! I hope you meant to do this!");
+		}
+	}
+
+	/// <summary>
+	/// Returns the saved data from the unity path
+	/// </summary>
+	/// <returns></returns>
 	public SaveHighScore Load()
 	{
 		var ppath = Application.persistentDataPath;

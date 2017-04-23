@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScoreCounter : MonoBehaviour
+public class ScoreOcean : MonoBehaviour
 {
 	public Text Score;
 
@@ -30,10 +30,13 @@ public class ScoreCounter : MonoBehaviour
 
 	void OnDestroy()
 	{
-		if(score > save.OceanScore)
+		if (score > save.OceanScore)
 		{
 			save.OceanScore = score;
 		}
 		Saving.Save(save);
+		Debug.Log("Saved score ocean: " + save.OceanScore);
+		Debug.Log("Saved score sky: " + save.SkyScore);
+		Debug.Log("Saved score space: " + save.SpaceScore);
 	}
 }
