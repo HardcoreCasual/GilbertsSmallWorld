@@ -25,10 +25,11 @@ public class SaveHighScore
 	/// </summary>
 	public string HighScoreName;
 
-	/// <summary>
-	/// The score that the player got for the current level
-	/// </summary>
-	public double Score;
+	public double OceanScore;
+
+	public double SkyScore;
+
+	public double SpaceScore;
 
 	/// <summary>
 	/// The total score that the players gets in all the levels combined

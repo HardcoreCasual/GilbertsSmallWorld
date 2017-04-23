@@ -69,10 +69,11 @@ public class SpeechBubble : MonoBehaviour
 		int characterCounter = 0;
 		while(true)
 		{
-			if(characterCounter < text.Length - 1)
+			if(characterCounter < text.Length)
 			{
-				TextBubbleReference.text += text[characterCounter++];
+				TextBubbleReference.text += text[characterCounter];
 				UnityEngine.Debug.Log(text[characterCounter]);
+				characterCounter++;
 			}
 			yield return new WaitForSeconds(speedOfText);
 			if(timer.Elapsed.TotalSeconds > seconds)
