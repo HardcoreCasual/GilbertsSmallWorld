@@ -187,5 +187,5 @@ public class bowlFish : MonoBehaviour
         {
             transform.position = new Vector2(transform.position.x, transform.position.y + 0.002f * Mathf.Sin(1 * Time.time));
         }
-    }
+    } //update
 }
