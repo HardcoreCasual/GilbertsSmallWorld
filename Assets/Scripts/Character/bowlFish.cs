@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class bowlFish : MonoBehaviour
 {
+    public SpeechBubble speech;
+    public int nextLevel;
 
     Rigidbody2D fishBody;
     Vector3 leftRotation = new Vector3(0, 0, 0), rightRotation = new Vector3(0, 180, 0);
@@ -12,8 +14,9 @@ public class bowlFish : MonoBehaviour
     Animator fishAnim;
     Animation Swim, Idle;
 
-    bool hasBounced = false;
+    bool hasBounced = false, hasEaten, canMove = true;
     float bounceCooldown = 0;
+    int foodCounter = 0;
 
     void Start()
     {
@@ -32,8 +35,8 @@ public class bowlFish : MonoBehaviour
         }
         else if (other.gameObject.tag == "Right Collision")
         {
-            if(inputVector.x > 0)
-            inputVector.x = -inputVector.x;
+            if (inputVector.x > 0)
+                inputVector.x = -inputVector.x;
 
         }
         else if (other.gameObject.tag == "Top Collision")
@@ -46,42 +49,35 @@ public class bowlFish : MonoBehaviour
 
     }
 
+    void Ate()
+    {
+        foodCounter++;
+    }
+
+    IEnumerator fallAsleep()
+    {
+        yield return new WaitForSeconds(3f);
+        canMove = false;
+        speech.startSetText(5, "Gilbert falls asleep. ", 0.1f);
+    }
+
+    IEnumerator loadLevel()
+    {
+        yield return new WaitForSeconds(5f);
+        Application.LoadLevel(nextLevel);
+    }
     void Update()
     {
-        if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
+
+        if (foodCounter >= 3 & !hasEaten)
         {
-            if (inputVector.y > 0)
-            {
-                if (inputVector.y - Time.deltaTime > 0)
-                    inputVector.y -= Time.deltaTime;
-                else
-                    inputVector.y = 0;
-            }
-            else if (inputVector.y < 0)
-            {
-                if (inputVector.y + Time.deltaTime < 0)
-                    inputVector.y += Time.deltaTime;
-                else
-                    inputVector.y = 0;
-            }
+            hasEaten = true;
+            StartCoroutine(fallAsleep());
         }
-        else
+
+        if (canMove)
         {
-            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
-            {
-                if (inputVector.y + Time.deltaTime < 1.5f)
-                    inputVector.y += Time.deltaTime;
-                else
-                    inputVector.y = 1.5f;
-            }
-            else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
-            {
-                if (inputVector.y - Time.deltaTime > -1.5f)
-                    inputVector.y -= Time.deltaTime;
-                else
-                    inputVector.y = -1.5f;
-            }
-            else
+            if ((Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)) && (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
             {
                 if (inputVector.y > 0)
                 {
@@ -98,42 +94,42 @@ public class bowlFish : MonoBehaviour
                         inputVector.y = 0;
                 }
             }
-        }
-
-        if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
-        {
-            if (inputVector.x > 0)
-            {
-                if (inputVector.x - Time.deltaTime > 0)
-                    inputVector.x -= Time.deltaTime;
-                else
-                    inputVector.x = 0;
-            }
-            else if (inputVector.x < 0)
-            {
-                if (inputVector.x + Time.deltaTime < 0)
-                    inputVector.x += Time.deltaTime;
-                else
-                    inputVector.x = 0;
-            }
-        }
-        else
-        {
-            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
-            {
-                if (inputVector.x - Time.deltaTime > -1.5f)
-                    inputVector.x -= Time.deltaTime;
-                else
-                    inputVector.x = -1.5f;
-            }
-            else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
-            {
-                if (inputVector.x + Time.deltaTime < 1.5f)
-                    inputVector.x += Time.deltaTime;
-                else
-                    inputVector.x = 1.5f;
-            }
             else
+            {
+                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))
+                {
+                    if (inputVector.y + Time.deltaTime < 1.5f)
+                        inputVector.y += Time.deltaTime;
+                    else
+                        inputVector.y = 1.5f;
+                }
+                else if (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S))
+                {
+                    if (inputVector.y - Time.deltaTime > -1.5f)
+                        inputVector.y -= Time.deltaTime;
+                    else
+                        inputVector.y = -1.5f;
+                }
+                else
+                {
+                    if (inputVector.y > 0)
+                    {
+                        if (inputVector.y - Time.deltaTime > 0)
+                            inputVector.y -= Time.deltaTime;
+                        else
+                            inputVector.y = 0;
+                    }
+                    else if (inputVector.y < 0)
+                    {
+                        if (inputVector.y + Time.deltaTime < 0)
+                            inputVector.y += Time.deltaTime;
+                        else
+                            inputVector.y = 0;
+                    }
+                }
+            }
+
+            if ((Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A)) && (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D)))
             {
                 if (inputVector.x > 0)
                 {
@@ -150,41 +146,82 @@ public class bowlFish : MonoBehaviour
                         inputVector.x = 0;
                 }
             }
-        }
+            else
+            {
+                if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A))
+                {
+                    if (inputVector.x - Time.deltaTime > -1.5f)
+                        inputVector.x -= Time.deltaTime;
+                    else
+                        inputVector.x = -1.5f;
+                }
+                else if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D))
+                {
+                    if (inputVector.x + Time.deltaTime < 1.5f)
+                        inputVector.x += Time.deltaTime;
+                    else
+                        inputVector.x = 1.5f;
+                }
+                else
+                {
+                    if (inputVector.x > 0)
+                    {
+                        if (inputVector.x - Time.deltaTime > 0)
+                            inputVector.x -= Time.deltaTime;
+                        else
+                            inputVector.x = 0;
+                    }
+                    else if (inputVector.x < 0)
+                    {
+                        if (inputVector.x + Time.deltaTime < 0)
+                            inputVector.x += Time.deltaTime;
+                        else
+                            inputVector.x = 0;
+                    }
+                }
+            }
 
-        if (inputVector.x > 0)
-        {
-            transform.eulerAngles = rightRotation;
-        }
-        else if (inputVector.x < 0)
-        {
-            transform.eulerAngles = leftRotation;
-        }
+            if (inputVector.x > 0)
+            {
+                transform.eulerAngles = rightRotation;
+            }
+            else if (inputVector.x < 0)
+            {
+                transform.eulerAngles = leftRotation;
+            }
 
-        //if (inputVector == Vector3.zero)
-        //{
-        //    inputVector = fishBody.velocity * 0.9f;
-        //}
+            //if (inputVector == Vector3.zero)
+            //{
+            //    inputVector = fishBody.velocity * 0.9f;
+            //}
 
-        if (inputVector.x != 0)
-        {
-            fishAnim.SetFloat("speed", Mathf.Abs(inputVector.x));
+            if (inputVector.x != 0)
+            {
+                fishAnim.SetFloat("speed", Mathf.Abs(inputVector.x));
+            }
+            else
+            {
+                fishAnim.SetFloat("speed", 0);
+            }
+            fishBody.velocity = inputVector;
+
+            //if (hasBounced)
+            //    bounceCooldown += Time.deltaTime;
+
+            //if (bounceCooldown >= 0.5f)
+            //    hasBounced = false;
+
+            if (inputVector == Vector2.zero)
+            {
+                transform.position = new Vector2(transform.position.x, transform.position.y + 0.002f * Mathf.Sin(1 * Time.time));
+            }
         }
         else
         {
+            fishBody.velocity = Vector2.zero;
             fishAnim.SetFloat("speed", 0);
-        }
-        fishBody.velocity = inputVector;
-
-        //if (hasBounced)
-        //    bounceCooldown += Time.deltaTime;
-
-        //if (bounceCooldown >= 0.5f)
-        //    hasBounced = false;
-
-        if (inputVector == Vector2.zero)
-        {
-            transform.position = new Vector2(transform.position.x, transform.position.y + 0.002f * Mathf.Sin(1 * Time.time));
+            fishAnim.SetBool("fallAsleep", true);
+            StartCoroutine(loadLevel());
         }
     }
 }

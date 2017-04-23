@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,6 +38,9 @@ public class SpeechBubble : MonoBehaviour
 	/// </summary>
 	public float Seconds;
 
+    public GameObject fishfood;
+    AudioSource source;
+
 	/// <summary>
 	/// Change whats in the text box immediately
 	/// </summary>
@@ -69,7 +72,7 @@ public class SpeechBubble : MonoBehaviour
 			if(characterCounter < text.Length - 1)
 			{
 				TextBubbleReference.text += text[characterCounter++];
-				UnityEngine.Debug.Log(text[characterCounter]);
+				//UnityEngine.Debug.Log(text[characterCounter]);
 			}
 			yield return new WaitForSeconds(speedOfText);
 			if(timer.Elapsed.TotalSeconds > seconds)
@@ -80,17 +83,48 @@ public class SpeechBubble : MonoBehaviour
 		TextBubbleReference.text = "";
 	}
 
+    public void startSetText(float sec, string tex, float speed)
+    {
+        StartCoroutine(SetTextFor(sec, tex, speed));
+    }
+
+
 	void Start ()
 	{
-		StartCoroutine(SetTextFor(Seconds, TextInBubble, Math.Abs(SpeedOfText)));
+        //StartCoroutine(SetTextFor(Seconds, TextInBubble, Math.Abs(SpeedOfText)));
+
+        source = GetComponent<AudioSource>();
+
+        StartCoroutine(sceneOne());
 	}
 
-	void Update ()
+    IEnumerator sceneOne ()
+    {
+        yield return new WaitForSeconds(3);
+        StartCoroutine(SetTextFor(5, "Gilbert is in his \nbowl. ", Math.Abs(SpeedOfText)));
+        yield return new WaitForSeconds(10);
+        StartCoroutine(SetTextFor(5, "Gilbert's bowl is \nvery small. ", Math.Abs(SpeedOfText)));
+        yield return new WaitForSeconds(10);
+        StartCoroutine(SetTextFor(7, "Gilbert ponders his \ndays in the ocean. ", Math.Abs(SpeedOfText)));
+        yield return new WaitForSeconds(12);
+        //start feeding
+        StartCoroutine(feedFish());
+
+    }
+
+    IEnumerator feedFish()
+    {
+        source.Play();
+        yield return new WaitForSeconds(1);
+        Instantiate(fishfood, new Vector3(0, 6, 0), Quaternion.identity);
+    }
+
+    void Update ()
 	{
-		if(Input.GetKeyDown(KeyCode.G))
-		{
-			StartCoroutine(SetTextFor(Seconds, TextInBubble, Math.Abs(SpeedOfText)));
-		}
-		transform.position = PositionOffset + BubbleFollowsThis.transform.position;
+		//if(Input.GetKeyDown(KeyCode.G))
+		//{
+		//	StartCoroutine(SetTextFor(Seconds, TextInBubble, Math.Abs(SpeedOfText)));
+		//}
+		//transform.position = PositionOffset + BubbleFollowsThis.transform.position;
 	}
 }
