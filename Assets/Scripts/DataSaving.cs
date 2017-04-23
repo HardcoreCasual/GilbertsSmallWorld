@@ -44,6 +44,10 @@ public class DataSaving
 	[DllImport("__Internal")]
 	static extern void WindowAlert(string message);
 
+	/// <summary>
+	/// Async saves a high score the players computer
+	/// </summary>
+	/// <param name="hs"></param>
 	public void Save(SaveHighScore hs)
 	{
 		var ppath = Application.persistentDataPath;
